@@ -174,11 +174,36 @@ class GasFreeGenerator: NSObject {
     func permitTransferMessageHash(gasfreeJSONString:String) -> String {
         if let gasFreeData = gasfreeJSONString.data(using: .utf8) {
             do {
-                let typed = try JSONDecoder().decode(EIP712TypedData.self, from: gasFreeData)
-                let finallyHash = try typed.signHash()
-                return finallyHash.hexEncoded
+                let jsonObject = try JSONSerialization.jsonObject(with: gasFreeData, options: [])
+                if let dictionary = jsonObject as? [String: Any],  let message = dictionary["message"] as? [String: Any] {
+                    
+                    guard let token = message["token"] as? String, token.isTRXAddress() else {
+                        print("Invalid message, token should be a valid Tron Address")
+                        return ""
+                    }
+                    
+                    guard let user = message["user"] as? String, user.isTRXAddress() else {
+                        print("Invalid message, user should be a valid Tron Address")
+                        return ""
+                    }
+                    guard let receiver = message["receiver"] as? String, receiver.isTRXAddress() else {
+                        print("Invalid message, receiver should be a valid Tron Address")
+                        return ""
+                    }
+                    guard let serviceProvider = message["serviceProvider"] as? String, serviceProvider.isTRXAddress() else {
+                        print("Invalid message, serviceProvider should be a valid Tron Address")
+                        return ""
+                    }
+                    do {
+                        let typed = try JSONDecoder().decode(EIP712TypedData.self, from: gasFreeData)
+                        let finallyHash = try typed.signHash()
+                        return finallyHash.hexEncoded
+                    } catch {
+                        print("Error json decode: \(error)")
+                    }
+                }
             } catch {
-                print("Error converting dictionary to data: \(error)")
+                print("Error converting data to json: \(error)")
             }
         }
         return ""
