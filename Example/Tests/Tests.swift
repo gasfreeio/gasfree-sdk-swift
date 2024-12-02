@@ -116,7 +116,8 @@ class Tests: XCTestCase {
     }
     
     func testGasFreeAddress() {
-        
+        let gasfreeAddress = GasFreeGenerator.shareManager.generateAddress(userAddress: "TLthCsi7GvwrrDVUws55sPiiTtMoMvmZ4Y")
+        XCTAssertEqual(gasfreeAddress,"TJAgN357rXxRVaGXiiHLj2B9mvAVjtsxfB")
     }
     
 }
