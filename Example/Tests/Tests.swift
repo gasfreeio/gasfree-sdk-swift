@@ -29,7 +29,7 @@ class Tests: XCTestCase {
     
     func testGasFreeParamHash() {
         
-        var message = GasfreeTransactionParamModel()
+        let message = GasfreeTransactionParamModel()
         message.token = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"
         message.provider = "TQ6qStrS2ZJ96gieZJC8AurTxwqJETmjfp"
         message.user = "TKtWbdzEq5ss9vTS9kwRhBp5mXmBfBns3E"
