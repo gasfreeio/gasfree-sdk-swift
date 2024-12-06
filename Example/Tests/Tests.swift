@@ -41,7 +41,7 @@ class Tests: XCTestCase {
         message.version = 1
         
         let signHash = GasFreeGenerator.shareManager.permitTransferMessageHash(env: .nile, messageModel: message)
-        XCTAssertEqual(signHash, "0x18cc1af5a367707a4b514cb37c5f9b5be568c5761d6caed614c98b2e4943b210")
+        XCTAssertEqual(signHash, "0x9ca6e723326b8599009e5052e5e4a014eb010a04a70bfb73b689912d73339e9e")
 
     }
     
@@ -116,8 +116,8 @@ class Tests: XCTestCase {
     }
     
     func testGasFreeAddress() {
-        let gasfreeAddress = GasFreeGenerator.shareManager.generateAddress(userAddress: "TLthCsi7GvwrrDVUws55sPiiTtMoMvmZ4Y")
-        XCTAssertEqual(gasfreeAddress,"TJAgN357rXxRVaGXiiHLj2B9mvAVjtsxfB")
+        let gasfreeAddress = GasFreeGenerator.shareManager.generateAddress(env: .nile, userAddress: "TLthCsi7GvwrrDVUws55sPiiTtMoMvmZ4Y")
+        XCTAssertEqual(gasfreeAddress,"TSBfKBxikmHREViNSZA1ez9Cc9BhyzMUuk")
     }
     
 }
