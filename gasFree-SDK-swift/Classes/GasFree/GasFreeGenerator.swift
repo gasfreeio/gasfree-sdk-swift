@@ -35,8 +35,7 @@ enum GasFreeGeneratorError: Error {
 
 class GasFreeGenerator: NSObject {
     @objc static let shareManager = GasFreeGenerator()
-    
-    var user = ""    
+      
     // MARK: GasFree Message Hash Generate
     func permitTransferMessageHash(gasfreeJSONString: String) throws -> String {
         if let gasFreeData = gasfreeJSONString.data(using: .utf8) {
@@ -74,20 +73,24 @@ class GasFreeGenerator: NSObject {
     
     // MARK: GasFree Address Generate
     func generateGasFreeAddress(chainId: String, userAddress: String) -> String {
-        
         let env = GasFreeCommon.getCurrentEnv(chainId: chainId)
+        let gasfreeAddress = self.generateGasFreeAddress(userAddress: userAddress, gasFreeFactoryAddress: env.verifyingContract, beaconAddress: env.beaconAddress, creationCodeStr: env.creationCode)
+        return gasfreeAddress
+    }
+    
+    func generateGasFreeAddress(userAddress: String, gasFreeFactoryAddress: String, beaconAddress: String, creationCodeStr: String) -> String {
         if userAddress.isEmpty {
             return ""
         }
-        self.user = userAddress
+        let user = userAddress
         
-        let salt = GasFreeCommon.getByte32(base58Data: self.user.base58CheckData)
-        let creationCode = env.creationCode.hexStringToUTF8Data()
-        let beacon = GasFreeCommon.getByte32(base58Data: env.beaconAddress.base58CheckData)
+        let salt = GasFreeCommon.getByte32(base58Data: user.base58CheckData)
+        let creationCode = creationCodeStr.hexStringToUTF8Data()
+        let beacon = GasFreeCommon.getByte32(base58Data: beaconAddress.base58CheckData)
         
-        guard let _ = self.user.base58CheckData,
+        guard let _ = user.base58CheckData,
               let _ = creationCode,
-              let _ = env.beaconAddress.base58CheckData else {
+              let _ = beaconAddress.base58CheckData else {
             return ""
         }
                         
@@ -140,7 +143,7 @@ class GasFreeGenerator: NSObject {
          **/
         var mergeData = Data()
         mergeData.append(TronLinkGasfreeConfig.preHexUInt)
-        mergeData.append(GasFreeCommon.base58CheckDecodeRemove41(address: env.verifyingContract))
+        mergeData.append(GasFreeCommon.base58CheckDecodeRemove41(address: gasFreeFactoryAddress))
         mergeData.append(salt)
         mergeData.append(bytecodeHash)
         let mergeDataSha3 = mergeData.sha3(.keccak256)
@@ -149,5 +152,6 @@ class GasFreeGenerator: NSObject {
         let gasFreeAddress = String(base58CheckEncoding: gasFreeAddressByte)
         return gasFreeAddress
     }
+
 }
 
