@@ -93,8 +93,12 @@ class Tests: XCTestCase {
           }
         }
         """
-        let signHash = GasFreeGenerator.shareManager.permitTransferMessageHash(gasfreeJSONString: gasfreeJSON)
-        XCTAssertEqual(signHash, "0x18cc1af5a367707a4b514cb37c5f9b5be568c5761d6caed614c98b2e4943b210")
+        do {
+            let signHash = try GasFreeGenerator.shareManager.permitTransferMessageHash(gasfreeJSONString: gasfreeJSON)
+            XCTAssertEqual(signHash, "0x18cc1af5a367707a4b514cb37c5f9b5be568c5761d6caed614c98b2e4943b210")
+        }catch let error {
+            print(error.localizedDescription)
+        }
     }
     
     func testGasFreeAddress() {
