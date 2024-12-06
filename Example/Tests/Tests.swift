@@ -27,24 +27,6 @@ class Tests: XCTestCase {
         }
     }
     
-    func testGasFreeParamHash() {
-        
-        let message = GasfreeTransactionParamModel()
-        message.token = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"
-        message.provider = "TQ6qStrS2ZJ96gieZJC8AurTxwqJETmjfp"
-        message.user = "TKtWbdzEq5ss9vTS9kwRhBp5mXmBfBns3E"
-        message.receiver = "TQ6qStrS2ZJ96gieZJC8AurTxwqJETmjfp"
-        message.value = "1000000"
-        message.maxFee = "1000000"
-        message.deadline = 1731066521
-        message.nonce = 0
-        message.version = 1
-        
-        let signHash = GasFreeGenerator.shareManager.permitTransferMessageHash(env: .nile, messageModel: message)
-        XCTAssertEqual(signHash, "0x9ca6e723326b8599009e5052e5e4a014eb010a04a70bfb73b689912d73339e9e")
-
-    }
-    
     func testGasFree712StructHash() {
         let gasfreeJSON = """
         {
@@ -116,7 +98,7 @@ class Tests: XCTestCase {
     }
     
     func testGasFreeAddress() {
-        let gasfreeAddress = GasFreeGenerator.shareManager.generateAddress(env: .nile, userAddress: "TLthCsi7GvwrrDVUws55sPiiTtMoMvmZ4Y")
+        let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: TronLinkGasfreeConfig.nile_chainId, userAddress: "TLthCsi7GvwrrDVUws55sPiiTtMoMvmZ4Y")
         XCTAssertEqual(gasfreeAddress,"TSBfKBxikmHREViNSZA1ez9Cc9BhyzMUuk")
     }
     

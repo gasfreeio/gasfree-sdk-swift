@@ -22,6 +22,5 @@ pod 'gasFree-SDK-swift'
 
 ## Demo
 
-- [testGasFreeParamHash](./Example/Tests/Tests.swift)
 - [testGasFree712StructHash](./Example/Tests/Tests.swift)
 - [testGasFreeAddress](./Example/Tests/Tests.swift)

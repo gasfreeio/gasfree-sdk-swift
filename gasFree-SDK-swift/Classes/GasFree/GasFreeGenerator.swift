@@ -8,24 +8,7 @@ import TronCore
 class GasFreeGenerator: NSObject {
     @objc static let shareManager = GasFreeGenerator()
     
-    var user = ""
-    // MARK: GasFree Message Hash Generate
-    func permitTransferMessageHash(env: TronLinkGasfreeConfig.TronLinkGasfreeEnv, messageModel:GasfreeTransactionParamModel) -> String {
-        let chainId = Int(env.chainId)
-        let verifyingContract = env.verifyingContract
-        if let gasFreedic = GasFreeCommon.createSigner712Struct(chainId: chainId,verifyingContract: verifyingContract, messageModel: messageModel) {
-            do {
-                let gasFreeData = try JSONSerialization.data(withJSONObject: gasFreedic, options: [])
-                let typed = try JSONDecoder().decode(EIP712TypedData.self, from: gasFreeData)
-                let finallyHash = try typed.signHash()
-                return finallyHash.hexEncoded
-            } catch {
-                print("Error converting dictionary to data: \(error)")
-            }
-        }
-        return ""
-    }
-    
+    var user = ""    
     // MARK: GasFree Message Hash Generate
     func permitTransferMessageHash(gasfreeJSONString:String) -> String {
         if let gasFreeData = gasfreeJSONString.data(using: .utf8) {
@@ -66,7 +49,9 @@ class GasFreeGenerator: NSObject {
     }
     
     // MARK: GasFree Address Generate
-    func generateAddress(env: TronLinkGasfreeConfig.TronLinkGasfreeEnv, userAddress: String) -> String {
+    func generateGasFreeAddress(chainId: String, userAddress: String) -> String {
+        
+        let env = GasFreeCommon.getCurrentEnv(chainId: chainId)
         if userAddress.isEmpty {
             return ""
         }

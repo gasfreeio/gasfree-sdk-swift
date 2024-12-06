@@ -45,7 +45,7 @@
 		97847CEDB8493ABDE96AC0AA /* Pods-gasFree-SDK-swift_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasFree-SDK-swift_Tests.release.xcconfig"; path = "Target Support Files/Pods-gasFree-SDK-swift_Tests/Pods-gasFree-SDK-swift_Tests.release.xcconfig"; sourceTree = "<group>"; };
 		B2DE011FD935C878DAC1E6BB /* Pods_gasFree_SDK_swift_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gasFree_SDK_swift_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B49D49F89A3E09073659DE51 /* Pods_gasFree_SDK_swift_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gasFree_SDK_swift_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8AAF940543DE0B3556FF1F0 /* gasFree-SDK-swift.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = "gasFree-SDK-swift.podspec"; path = "../gasFree-SDK-swift.podspec"; sourceTree = "<group>"; };
+		D8AAF940543DE0B3556FF1F0 /* gasFree-SDK-swift.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = "gasFree-SDK-swift.podspec"; path = "../gasFree-SDK-swift.podspec"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		E227CBC1FB8A6CEB931C9A93 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
