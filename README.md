@@ -1,6 +1,6 @@
 # gasFree-SDK-swift
 
-gasFree-SDK-swift is repo of TronLink
+gasFree-Java-SDK Generator gasFree Address from user address
 
 ## Example
 
@@ -22,5 +22,6 @@ pod 'gasFree-SDK-swift'
 
 ## Demo
 
+- [testGasFreeMessageParam](./Example/Tests/Tests.swift)
 - [testGasFree712StructHash](./Example/Tests/Tests.swift)
-- [testGasFreeAddress](./Example/Tests/Tests.swift)
+- [testGenerateGasFreeAddress](./Example/Tests/Tests.swift)

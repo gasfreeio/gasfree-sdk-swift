@@ -35,8 +35,31 @@ enum GasFreeGeneratorError: Error {
 
 class GasFreeGenerator: NSObject {
     @objc static let shareManager = GasFreeGenerator()
-      
+    
     // MARK: GasFree Message Hash Generate
+    func permitTransferMessageHash(chainId: String,
+                                   verifyingContract: String,
+                                   token: String,
+                                   serviceProvider: String,
+                                   user: String,
+                                   receiver: String,
+                                   value: String,
+                                   maxFee: String,
+                                   deadline: Int64,
+                                   version: Int64,
+                                   nonce: Int64) throws -> String {
+        
+        let gasFreedic = GasFreeCommon.createSigner712Struct(chainId: chainId, verifyingContract: verifyingContract, token: token, serviceProvider: serviceProvider, user: user, receiver: receiver, value: value, maxFee: maxFee, deadline: deadline, version: version, nonce: nonce)
+        do {
+            let jsonData = try JSONSerialization.data(withJSONObject: gasFreedic ?? [:], options: [])
+            let jsonString = String(data: jsonData, encoding: .utf8) ?? ""
+            let messageHash = try self.permitTransferMessageHash(gasfreeJSONString: jsonString)
+            return messageHash
+        } catch {
+            throw GasFreeGeneratorError.jsonConversionError(error)
+        }
+    }
+      
     func permitTransferMessageHash(gasfreeJSONString: String) throws -> String {
         if let gasFreeData = gasfreeJSONString.data(using: .utf8) {
             do {

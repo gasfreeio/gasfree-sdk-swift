@@ -9,7 +9,7 @@
 Pod::Spec.new do |s|
   s.name             = 'gasFree-SDK-swift'
   s.version          = '0.1.0'
-  s.summary          = 'gasFree-SDK-swift is repo of TronLink'
+  s.summary          = 'gasFree-Java-SDK Generator gasFree Address from user address'
 
   s.homepage         = 'https://github.com/TronLink/gasFree-SDK-swift'
   s.license          = { :type => 'Apache', :file => 'LICENSE' }
