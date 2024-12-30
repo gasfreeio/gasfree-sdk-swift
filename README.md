@@ -1,6 +1,6 @@
-# gasFree-SDK-swift
+# gasfree-sdk-swift
 
-gasFree-Java-SDK Generator gasFree Address from user address
+gasfree-sdk-swift Generator gasFree Address from user address
 
 ## Example
 
@@ -13,11 +13,11 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 ## Installation
 
-gasFree-SDK-swift is available through [CocoaPods](https://cocoapods.org). To install
+gasfree-sdk-swift is available through [CocoaPods](https://cocoapods.org). To install
 it, simply add the following line to your Podfile:
 
 ```ruby
-pod 'gasFree-SDK-swift'
+pod 'gasfree-sdk-swift'
 ```
 
 ## Demo
