@@ -1,11 +1,3 @@
-//
-//  ViewController.swift
-//  gasFree-SDK-swift
-//
-//  Created by elonGT on 11/29/2024.
-//  Copyright (c) 2024 elonGT. All rights reserved.
-//
-
 import UIKit
 
 class ViewController: UIViewController {
