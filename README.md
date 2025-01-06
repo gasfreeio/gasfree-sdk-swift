@@ -17,13 +17,6 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 - iOS 10.0+
 - Swift 4.2
 
-## Integrity Check
-The package files will be signed using a GPG key pair, and the correctness of the signature will be verified using the following public key:
-```
-  pub: 7B910EA80207596075E6D7BA5D34F7A6550473BA
-  uid: build_tronlink <build@tronlink.org>
-```
-
 ## Demo
 
 - [testGasFreeMessageParam](./Example/Tests/Tests.swift)
@@ -73,5 +66,14 @@ You will get the GasFree Transfer Message Hash.
 or you just use the permitTransferMessageHash(eipJson) function.
 
 and more, you should sign the hash for real transaction.
+
+## Integrity Check
+The package files will be signed using a GPG key pair, and the correctness of the signature will be verified using the following public key:
+```
+  pub: 7B910EA80207596075E6D7BA5D34F7A6550473BA
+  uid: build_tronlink <build@tronlink.org>
+```
+## License
+This project is licensed under the Apache License Version 2.0 - see the LICENSE file for details
 
 
