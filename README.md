@@ -1,6 +1,8 @@
-# gasfree-sdk-swift
+# tronlink-gasfree-sdk-swift
 
-gasfree-sdk-swift is a toolkit designed by TronLink to enable seamless integration with the gasFree transfer service. It offers a collection of utility classes and methods to streamline development and integration efficiency for iOS apps.
+tronlink-gasfree-sdk-swift is a toolkit designed by TronLink to enable seamless integration with the GasFree transfer service. It offers a collection of utility classes and methods to streamline development and integration efficiency for iOS apps.
+
+Please note that this SDK is developed by TronLink and not officially provided by GasFree. For official information, please visit [gasfree.io](https://gasfree.io).
 
 Key Features:
 - Generate gasFree Addresses from User Addresses
@@ -14,15 +16,6 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 
 - iOS 10.0+
 - Swift 4.2
-
-## Installation
-
-gasfree-sdk-swift is available through [CocoaPods](https://cocoapods.org). To install
-it, simply add the following line to your Podfile:
-
-```ruby
-pod 'gasfree-sdk-swift'
-```
 
 ## Demo
 
