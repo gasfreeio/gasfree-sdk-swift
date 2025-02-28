@@ -31,20 +31,20 @@ class Tests: XCTestCase {
         let gasfreeJSON = """
         {
           "domain": {
-            "chainId": 3448148188,
+            "chainId": "728126428",
             "name": "GasFreeController",
             "verifyingContract": "TFFAMQLZybALaLb4uxHA9RBE7pxhUAjF3U",
             "version": "V1.0.0"
           },
           "message": {
-            "deadline": 1731066521,
-            "maxFee": 1000000,
-            "nonce": 0,
-            "receiver": "TQ6qStrS2ZJ96gieZJC8AurTxwqJETmjfp",
+            "deadline": 1740641152,
+            "maxFee": "20000000",
+            "nonce": 1,
+            "receiver": "TSPrmJetAMo6S6RxMd4tswzeRCFVegBNig",
             "serviceProvider": "TLntW9Z59LYY5KEi9cmwk3PKjQga828ird",
-            "token": "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf",
-            "user": "TKtWbdzEq5ss9vTS9kwRhBp5mXmBfBns3E",
-            "value": 1000000,
+            "token": "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+            "user": "TFDP1vFeSYPT6FUznL7zUjhg5X7p2AA8vw",
+            "value": "20000000",
             "version":1
           },
           "primaryType": "PermitTransfer",
@@ -95,7 +95,7 @@ class Tests: XCTestCase {
         """
         do {
             let signHash = try GasFreeGenerator.shareManager.permitTransferMessageHash(gasfreeJSONString: gasfreeJSON)
-            XCTAssertEqual(signHash, "0x2e3f8bf89550fa4d5d208f32d4ec2caf32f9dc07cde5943bb93ed8229444e535")
+            XCTAssertEqual(signHash, "0x4e0e1444d20768c286b9de66064e4e7311b5160871c8c0292ffeac9a16265622")
         }catch let error {
             XCTFail("Unexpected error: \(error.localizedDescription)")
         }
@@ -103,29 +103,29 @@ class Tests: XCTestCase {
     
     func testGasFreeMessageParam() {
         
-        let chainId: String = "3448148188"
+        let chainId: String = "728126428"
         let verifyingContract: String = "TFFAMQLZybALaLb4uxHA9RBE7pxhUAjF3U"
-        let token: String = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"
+        let token: String = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"
         let serviceProvider: String = "TLntW9Z59LYY5KEi9cmwk3PKjQga828ird"
-        let user: String = "TKtWbdzEq5ss9vTS9kwRhBp5mXmBfBns3E"
-        let receiver: String  = "TQ6qStrS2ZJ96gieZJC8AurTxwqJETmjfp"
-        let value: String  = "1000000"
-        let maxFee: String  = "1000000"
-        let deadline: Int64 = 1731066521
+        let user: String = "TFDP1vFeSYPT6FUznL7zUjhg5X7p2AA8vw"
+        let receiver: String  = "TSPrmJetAMo6S6RxMd4tswzeRCFVegBNig"
+        let value: String  = "20000000"
+        let maxFee: String  = "20000000"
+        let deadline: Int64 = 1740641152
         let version: Int64 = 1
-        let nonce: Int64 = 0
+        let nonce: Int64 = 1
         
         do {
             let signHash = try GasFreeGenerator.shareManager.permitTransferMessageHash(chainId: chainId, verifyingContract: verifyingContract, token: token, serviceProvider: serviceProvider, user: user, receiver: receiver, value: value, maxFee: maxFee, deadline: deadline, version: version, nonce: nonce)
-            XCTAssertEqual(signHash, "0x2e3f8bf89550fa4d5d208f32d4ec2caf32f9dc07cde5943bb93ed8229444e535")
+            XCTAssertEqual(signHash, "0x4e0e1444d20768c286b9de66064e4e7311b5160871c8c0292ffeac9a16265622")
         }catch let error {
             XCTFail("Unexpected error: \(error.localizedDescription)")
         }
     }
     
     func testGenerateGasFreeAddress() {
-        let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: TronLinkGasfreeConfig.nile_chainId, userAddress: "TLFXfejEMgivFDR2x8qBpukMXd56spmFhz")
-        XCTAssertEqual(gasfreeAddress,"TK6eT5fDon22MM6tf1UDwgRySkNEybNLmw")
+        let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: TronLinkGasfreeConfig.mainnet_chainId, userAddress: "TLFXfejEMgivFDR2x8qBpukMXd56spmFhz")
+        XCTAssertEqual(gasfreeAddress,"TYKTmMyTeAFrfdRTpYHjnAtFEJtMMotJJe")
     }
     
 }
