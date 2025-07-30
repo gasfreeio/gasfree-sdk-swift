@@ -11,10 +11,10 @@ Pod::Spec.new do |s|
   s.version          = '0.1.0'
   s.summary          = 'gasfree-sdk-swift Generator gasFree Address from user address'
 
-  s.homepage         = 'https://github.com/TronLink/gasfree-sdk-swift'
+  s.homepage         = 'https://github.com/gasfreeio/gasfree-sdk-swift'
   s.license          = { :type => 'Apache', :file => 'LICENSE' }
   s.author           = 'tronlinkdev'
-  s.source           = { :git => 'https://github.com/TronLink/gasfree-sdk-swift.git', :tag => s.version.to_s }
+  s.source           = { :git => 'https://github.com/gasfreeio/gasfree-sdk-swift.git', :tag => s.version.to_s }
   s.ios.deployment_target = '11.0'
   s.swift_versions = '4.2'
 
