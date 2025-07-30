@@ -33,9 +33,9 @@ import gasfree sdk
 ```
 ### generateGasFreeAddress
 
-use generateGasFreeAddress with userAddress and general chainId (et. TronLinkGasfreeConfig.nile_chainId 0xcd8690dc)
+use generateGasFreeAddress with userAddress and general chainId (et. GasfreeConfig.nile_chainId 0xcd8690dc)
 ```
-    let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: TronLinkGasfreeConfig.nile_chainId, userAddress: userAddress)
+    let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: GasfreeConfig.nile_chainId, userAddress: userAddress)
 ```
 gasFreeAddress is your gasFree Address
 

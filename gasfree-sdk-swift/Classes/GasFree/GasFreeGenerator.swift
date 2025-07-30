@@ -165,7 +165,7 @@ class GasFreeGenerator: NSObject {
          ) )
          **/
         var mergeData = Data()
-        mergeData.append(TronLinkGasfreeConfig.preHexUInt)
+        mergeData.append(GasfreeConfig.preHexUInt)
         mergeData.append(GasFreeCommon.base58CheckDecodeRemove41(address: gasFreeFactoryAddress))
         mergeData.append(salt)
         mergeData.append(bytecodeHash)
