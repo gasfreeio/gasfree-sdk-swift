@@ -13,7 +13,7 @@ Pod::Spec.new do |s|
 
   s.homepage         = 'https://github.com/gasfreeio/gasfree-sdk-swift'
   s.license          = { :type => 'Apache', :file => 'LICENSE' }
-  s.author           = 'tronlinkdev'
+  s.author           = 'gasfree-dev'
   s.source           = { :git => 'https://github.com/gasfreeio/gasfree-sdk-swift.git', :tag => s.version.to_s }
   s.ios.deployment_target = '11.0'
   s.swift_versions = '4.2'
