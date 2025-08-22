@@ -7,9 +7,9 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'gasfree-sdk-swift'
+  s.name             = 'gasfree-sdk'
   s.version          = '0.1.0'
-  s.summary          = 'gasfree-sdk-swift Generator gasFree Address from user address'
+  s.summary          = 'gasfree-sdk Generator gasFree Address from user address'
 
   s.homepage         = 'https://github.com/gasfreeio/gasfree-sdk-swift'
   s.license          = { :type => 'Apache', :file => 'LICENSE' }
@@ -19,5 +19,5 @@ Pod::Spec.new do |s|
   s.swift_versions = '4.2'
 
   s.source_files = 'gasfree-sdk-swift/Classes/**/*'
-  s.dependency 'tronlink-iOS-core'
+  s.dependency 'tronlink-iOS-core', '~> 0.1.0'
 end

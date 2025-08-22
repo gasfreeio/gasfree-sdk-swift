@@ -1,11 +1,9 @@
-# gasfree-sdk-swift
+# gasfree-sdk
 
-gasfree-sdk-swift is a toolkit developed based on the GasFree API specification,
+gasfree-sdk is a toolkit developed based on the GasFree API specification,
 It facilitates the integration of the non-gas TRC20 token transfer service for the iOS platform.
 
-Originally developed by TronLink and hosted at https://github.com/TronLink/gasfree-sdk-swift.git, this SDK is now maintained and continuously updated by the gasfree.io developer community.
-
-For more information, visit [gasfree.io](https://gasfree.io).
+This SDK is maintained by the gasfree.io developer community.For more information, visit [gasfree.io](https://gasfree.io).
 
 Key Features:
 - Generate GasFree Addresses from User Addresses
@@ -20,6 +18,15 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 - iOS 10.0+
 - Swift 4.2
 
+## How to use
+
+gasfree-sdk is available through [CocoaPods](https://cocoapods.org). To install
+it, simply add the following line to your Podfile:
+
+```ruby
+pod 'gasfree-sdk'
+```
+
 ## Demo
 
 - [testGasFreeMessageParam](./Example/Tests/Tests.swift)
@@ -29,7 +36,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ## Function 
 import gasfree sdk 
 ```
-    import gasfree_sdk_swift
+    import gasfree_sdk
 ```
 ### generateGasFreeAddress
 
