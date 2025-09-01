@@ -3,7 +3,7 @@ use_frameworks!
 platform :ios, '11.0'
 
 target 'gasfree-sdk-swift_Example' do
-  pod 'gasfree-sdk-swift', :path => '../'
+  pod 'gasfree-sdk', :path => '../'
 
   target 'gasfree-sdk-swift_Tests' do
     inherit! :search_paths
