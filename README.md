@@ -1,6 +1,6 @@
-# gasfree-sdk-swift
+# gasfree-sdk
 
-gasfree-sdk-swift is a toolkit developed based on the GasFree API specification,
+gasfree-sdk is a toolkit developed based on the GasFree API specification,
 It facilitates the integration of the non-gas TRC20 token transfer service for the iOS platform.
 
 Originally developed by TronLink and hosted at https://github.com/TronLink/gasfree-sdk-swift.git, this SDK is now maintained and continuously updated by the gasfree.io developer community.
@@ -29,7 +29,7 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ## Function 
 import gasfree sdk 
 ```
-    import gasfree_sdk_swift
+    import gasfree_sdk
 ```
 ### generateGasFreeAddress
 

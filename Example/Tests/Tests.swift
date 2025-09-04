@@ -1,5 +1,5 @@
 import XCTest
-@testable import gasfree_sdk_swift
+@testable import gasfree_sdk
 import TLCore
 import TronKeystore
 

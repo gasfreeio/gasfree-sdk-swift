@@ -1,5 +1,5 @@
 #
-# Be sure to run `pod lib lint gasfree-sdk-swift.podspec' to ensure this is a
+# Be sure to run `pod lib lint gasfree-sdk.podspec' to ensure this is a
 # valid spec before submitting.
 #
 # Any lines starting with a # are optional, but their use is encouraged
@@ -7,9 +7,9 @@
 #
 
 Pod::Spec.new do |s|
-  s.name             = 'gasfree-sdk-swift'
+  s.name             = 'gasfree-sdk'
   s.version          = '1.0.0'
-  s.summary          = 'gasfree-sdk-swift Generator gasFree Address from user address'
+  s.summary          = 'gasfree-sdk Generator gasFree Address from user address'
 
   s.homepage         = 'https://github.com/gasfreeio/gasfree-sdk-swift'
   s.license          = { :type => 'Apache', :file => 'LICENSE' }
