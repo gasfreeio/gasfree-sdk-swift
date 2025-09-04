@@ -1,8 +1,11 @@
-# tronlink-gasfree-sdk-swift
+# gasfree-sdk
 
-tronlink-gasfree-sdk-swift is a toolkit developed by TronLink based on the GasFree API specification. It facilitates the integration of the non-gas TRC20 token transfer service for the iOS platform.
+gasfree-sdk is a toolkit developed based on the GasFree API specification,
+It facilitates the integration of the non-gas TRC20 token transfer service for the iOS platform.
 
-This SDK is provided by TronLink, while the definition & maintenance of the APIs are managed by the official GasFree project. For more information, visit [gasfree.io](https://gasfree.io).
+Originally developed by TronLink and hosted at https://github.com/TronLink/gasfree-sdk-swift.git, this SDK is now maintained and continuously updated by the gasfree.io developer community.
+
+For more information, visit [gasfree.io](https://gasfree.io).
 
 Key Features:
 - Generate GasFree Addresses from User Addresses
@@ -26,13 +29,13 @@ To run the example project, clone the repo, and run `pod install` from the Examp
 ## Function 
 import gasfree sdk 
 ```
-    import gasfree_sdk_swift
+    import gasfree_sdk
 ```
 ### generateGasFreeAddress
 
-use generateGasFreeAddress with userAddress and general chainId (et. TronLinkGasfreeConfig.nile_chainId 0xcd8690dc)
+use generateGasFreeAddress with userAddress and general chainId (et. GasfreeConfig.nile_chainId 0xcd8690dc)
 ```
-    let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: TronLinkGasfreeConfig.nile_chainId, userAddress: userAddress)
+    let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: GasfreeConfig.nile_chainId, userAddress: userAddress)
 ```
 gasFreeAddress is your gasFree Address
 
@@ -67,12 +70,6 @@ or you just use the permitTransferMessageHash(eipJson) function.
 
 and more, you should sign the hash for real transaction.
 
-## Integrity Check
-The package files will be signed using a GPG key pair, and the correctness of the signature will be verified using the following public key:
-```
-  pub: 7B910EA80207596075E6D7BA5D34F7A6550473BA
-  uid: build_tronlink <build@tronlink.org>
-```
 ## License
 This project is licensed under the Apache License Version 2.0 - see the [LICENSE](LICENSE) file for details
 

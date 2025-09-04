@@ -7,14 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		55439C675D8A2F24F17D2736 /* Pods_gasfree_sdk_swift_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A42A7F42A5C9639101E0217A /* Pods_gasfree_sdk_swift_Example.framework */; };
+		15A6E99EB667C96E46A04CF7 /* Pods_gasfree_sdk_swift_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFF0174C36FD3557CF69D46F /* Pods_gasfree_sdk_swift_Tests.framework */; };
+		2374A73CEE9584C3FC8C4F5E /* Pods_gasfree_sdk_swift_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CF96850834A4571699CD1AE2 /* Pods_gasfree_sdk_swift_Example.framework */; };
 		607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD51AFB9204008FA782 /* AppDelegate.swift */; };
 		607FACD81AFB9204008FA782 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACD71AFB9204008FA782 /* ViewController.swift */; };
 		607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 607FACD91AFB9204008FA782 /* Main.storyboard */; };
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		607FACEC1AFB9204008FA782 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 607FACEB1AFB9204008FA782 /* Tests.swift */; };
-		94640D61C396AC9FD0805B86 /* Pods_gasfree_sdk_swift_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 29A730CDED07CEB01014302B /* Pods_gasfree_sdk_swift_Tests.framework */; };
+		82CC26BA2E6977D500ECDF9D /* gasfree-sdk.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 82CC26B92E6977D500ECDF9D /* gasfree-sdk.podspec */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,7 +30,7 @@
 
 /* Begin PBXFileReference section */
 		1B19BE19ED3F99854B74A8CB /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
-		29A730CDED07CEB01014302B /* Pods_gasfree_sdk_swift_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gasfree_sdk_swift_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5FE223FB737242F6B756EAE7 /* Pods-gasfree-sdk-swift_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasfree-sdk-swift_Example.release.xcconfig"; path = "Target Support Files/Pods-gasfree-sdk-swift_Example/Pods-gasfree-sdk-swift_Example.release.xcconfig"; sourceTree = "<group>"; };
 		607FACD01AFB9204008FA782 /* gasfree-sdk-swift_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "gasfree-sdk-swift_Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACD41AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACD51AFB9204008FA782 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -40,13 +41,13 @@
 		607FACE51AFB9204008FA782 /* gasfree-sdk-swift_Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "gasfree-sdk-swift_Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		607FACEA1AFB9204008FA782 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		607FACEB1AFB9204008FA782 /* Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
-		6790BC6DDC8DDD879187F593 /* Pods-gasfree-sdk-swift_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasfree-sdk-swift_Tests.release.xcconfig"; path = "Target Support Files/Pods-gasfree-sdk-swift_Tests/Pods-gasfree-sdk-swift_Tests.release.xcconfig"; sourceTree = "<group>"; };
-		85880E370DAA4F99F79FE4AB /* Pods-gasfree-sdk-swift_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasfree-sdk-swift_Tests.debug.xcconfig"; path = "Target Support Files/Pods-gasfree-sdk-swift_Tests/Pods-gasfree-sdk-swift_Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		8E1BFD0E74F0940294BB788A /* Pods-gasfree-sdk-swift_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasfree-sdk-swift_Example.debug.xcconfig"; path = "Target Support Files/Pods-gasfree-sdk-swift_Example/Pods-gasfree-sdk-swift_Example.debug.xcconfig"; sourceTree = "<group>"; };
-		A42A7F42A5C9639101E0217A /* Pods_gasfree_sdk_swift_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gasfree_sdk_swift_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D8AAF940543DE0B3556FF1F0 /* gasfree-sdk-swift.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = "gasfree-sdk-swift.podspec"; path = "../gasfree-sdk-swift.podspec"; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		82CC26B92E6977D500ECDF9D /* gasfree-sdk.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "gasfree-sdk.podspec"; path = "../gasfree-sdk.podspec"; sourceTree = "<group>"; };
+		92986EF8AC2E640EF5653FDB /* Pods-gasfree-sdk-swift_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasfree-sdk-swift_Tests.debug.xcconfig"; path = "Target Support Files/Pods-gasfree-sdk-swift_Tests/Pods-gasfree-sdk-swift_Tests.debug.xcconfig"; sourceTree = "<group>"; };
+		9D613EE9E3FB42FC3CC66886 /* Pods-gasfree-sdk-swift_Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasfree-sdk-swift_Tests.release.xcconfig"; path = "Target Support Files/Pods-gasfree-sdk-swift_Tests/Pods-gasfree-sdk-swift_Tests.release.xcconfig"; sourceTree = "<group>"; };
+		BFF0174C36FD3557CF69D46F /* Pods_gasfree_sdk_swift_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gasfree_sdk_swift_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		CF96850834A4571699CD1AE2 /* Pods_gasfree_sdk_swift_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_gasfree_sdk_swift_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DFD9F96EF29278B1E2E7E0BB /* Pods-gasfree-sdk-swift_Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasfree-sdk-swift_Example.debug.xcconfig"; path = "Target Support Files/Pods-gasfree-sdk-swift_Example/Pods-gasfree-sdk-swift_Example.debug.xcconfig"; sourceTree = "<group>"; };
 		E227CBC1FB8A6CEB931C9A93 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
-		F9BC63CC1225623701991709 /* Pods-gasfree-sdk-swift_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-gasfree-sdk-swift_Example.release.xcconfig"; path = "Target Support Files/Pods-gasfree-sdk-swift_Example/Pods-gasfree-sdk-swift_Example.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				55439C675D8A2F24F17D2736 /* Pods_gasfree_sdk_swift_Example.framework in Frameworks */,
+				2374A73CEE9584C3FC8C4F5E /* Pods_gasfree_sdk_swift_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -62,7 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94640D61C396AC9FD0805B86 /* Pods_gasfree_sdk_swift_Tests.framework in Frameworks */,
+				15A6E99EB667C96E46A04CF7 /* Pods_gasfree_sdk_swift_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,10 +73,10 @@
 		5913CD892E43C09B6B87F9D7 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				8E1BFD0E74F0940294BB788A /* Pods-gasfree-sdk-swift_Example.debug.xcconfig */,
-				F9BC63CC1225623701991709 /* Pods-gasfree-sdk-swift_Example.release.xcconfig */,
-				85880E370DAA4F99F79FE4AB /* Pods-gasfree-sdk-swift_Tests.debug.xcconfig */,
-				6790BC6DDC8DDD879187F593 /* Pods-gasfree-sdk-swift_Tests.release.xcconfig */,
+				DFD9F96EF29278B1E2E7E0BB /* Pods-gasfree-sdk-swift_Example.debug.xcconfig */,
+				5FE223FB737242F6B756EAE7 /* Pods-gasfree-sdk-swift_Example.release.xcconfig */,
+				92986EF8AC2E640EF5653FDB /* Pods-gasfree-sdk-swift_Tests.debug.xcconfig */,
+				9D613EE9E3FB42FC3CC66886 /* Pods-gasfree-sdk-swift_Tests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -88,7 +89,7 @@
 				607FACE81AFB9204008FA782 /* Tests */,
 				607FACD11AFB9204008FA782 /* Products */,
 				5913CD892E43C09B6B87F9D7 /* Pods */,
-				8946F3336B364104917B6763 /* Frameworks */,
+				DEB7DCCBECD3280EB4CFFB41 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -143,18 +144,18 @@
 		607FACF51AFB993E008FA782 /* Podspec Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				D8AAF940543DE0B3556FF1F0 /* gasfree-sdk-swift.podspec */,
+				82CC26B92E6977D500ECDF9D /* gasfree-sdk.podspec */,
 				1B19BE19ED3F99854B74A8CB /* README.md */,
 				E227CBC1FB8A6CEB931C9A93 /* LICENSE */,
 			);
 			name = "Podspec Metadata";
 			sourceTree = "<group>";
 		};
-		8946F3336B364104917B6763 /* Frameworks */ = {
+		DEB7DCCBECD3280EB4CFFB41 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A42A7F42A5C9639101E0217A /* Pods_gasfree_sdk_swift_Example.framework */,
-				29A730CDED07CEB01014302B /* Pods_gasfree_sdk_swift_Tests.framework */,
+				CF96850834A4571699CD1AE2 /* Pods_gasfree_sdk_swift_Example.framework */,
+				BFF0174C36FD3557CF69D46F /* Pods_gasfree_sdk_swift_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -166,11 +167,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACEF1AFB9204008FA782 /* Build configuration list for PBXNativeTarget "gasfree-sdk-swift_Example" */;
 			buildPhases = (
-				B06BA8D1C5CE153A587332FE /* [CP] Check Pods Manifest.lock */,
+				928736D4E54A7811DD98E72A /* [CP] Check Pods Manifest.lock */,
 				607FACCC1AFB9204008FA782 /* Sources */,
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
-				470E8DF76BF370FDDC87F695 /* [CP] Embed Pods Frameworks */,
+				91DE114B5EEB09B4415D9375 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -185,7 +186,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 607FACF21AFB9204008FA782 /* Build configuration list for PBXNativeTarget "gasfree-sdk-swift_Tests" */;
 			buildPhases = (
-				BA965D7824C932EA34B1F814 /* [CP] Check Pods Manifest.lock */,
+				F317C992BA9F9883A9612166 /* [CP] Check Pods Manifest.lock */,
 				607FACE11AFB9204008FA782 /* Sources */,
 				607FACE21AFB9204008FA782 /* Frameworks */,
 				607FACE31AFB9204008FA782 /* Resources */,
@@ -249,6 +250,7 @@
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
+				82CC26BA2E6977D500ECDF9D /* gasfree-sdk.podspec in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,7 +264,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		470E8DF76BF370FDDC87F695 /* [CP] Embed Pods Frameworks */ = {
+		91DE114B5EEB09B4415D9375 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -285,10 +287,10 @@
 				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/gRPC-ProtoRPC/ProtoRPC.framework",
 				"${BUILT_PRODUCTS_DIR}/gRPC-RxLibrary/RxLibrary.framework",
-				"${BUILT_PRODUCTS_DIR}/gasfree-sdk-swift/gasfree_sdk_swift.framework",
+				"${BUILT_PRODUCTS_DIR}/gasfree-sdk/gasfree_sdk.framework",
 				"${BUILT_PRODUCTS_DIR}/keccak.c/keccak.framework",
 				"${BUILT_PRODUCTS_DIR}/scrypt.c/scrypt.framework",
-				"${BUILT_PRODUCTS_DIR}/secp256k1.c/secp256k1.framework",
+				"${BUILT_PRODUCTS_DIR}/tron-wallet-secp256k1/tron_wallet_secp256k1.framework",
 				"${BUILT_PRODUCTS_DIR}/tronlink-iOS-core/TLCore.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
@@ -309,10 +311,10 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ProtoRPC.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxLibrary.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/gasfree_sdk_swift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/gasfree_sdk.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/keccak.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/scrypt.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/secp256k1.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/tron_wallet_secp256k1.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TLCore.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -320,7 +322,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-gasfree-sdk-swift_Example/Pods-gasfree-sdk-swift_Example-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		B06BA8D1C5CE153A587332FE /* [CP] Check Pods Manifest.lock */ = {
+		928736D4E54A7811DD98E72A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -342,7 +344,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BA965D7824C932EA34B1F814 /* [CP] Check Pods Manifest.lock */ = {
+		F317C992BA9F9883A9612166 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -459,7 +461,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -505,7 +507,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -515,11 +517,11 @@
 		};
 		607FACF01AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8E1BFD0E74F0940294BB788A /* Pods-gasfree-sdk-swift_Example.debug.xcconfig */;
+			baseConfigurationReference = DFD9F96EF29278B1E2E7E0BB /* Pods-gasfree-sdk-swift_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "gasfree-sdk-swift/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -531,11 +533,11 @@
 		};
 		607FACF11AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F9BC63CC1225623701991709 /* Pods-gasfree-sdk-swift_Example.release.xcconfig */;
+			baseConfigurationReference = 5FE223FB737242F6B756EAE7 /* Pods-gasfree-sdk-swift_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "gasfree-sdk-swift/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
 				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
@@ -547,7 +549,7 @@
 		};
 		607FACF31AFB9204008FA782 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 85880E370DAA4F99F79FE4AB /* Pods-gasfree-sdk-swift_Tests.debug.xcconfig */;
+			baseConfigurationReference = 92986EF8AC2E640EF5653FDB /* Pods-gasfree-sdk-swift_Tests.debug.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",
@@ -569,7 +571,7 @@
 		};
 		607FACF41AFB9204008FA782 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6790BC6DDC8DDD879187F593 /* Pods-gasfree-sdk-swift_Tests.release.xcconfig */;
+			baseConfigurationReference = 9D613EE9E3FB42FC3CC66886 /* Pods-gasfree-sdk-swift_Tests.release.xcconfig */;
 			buildSettings = {
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(PLATFORM_DIR)/Developer/Library/Frameworks",

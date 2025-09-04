@@ -1,5 +1,5 @@
 import XCTest
-@testable import gasfree_sdk_swift
+@testable import gasfree_sdk
 import TLCore
 import TronKeystore
 
@@ -124,7 +124,7 @@ class Tests: XCTestCase {
     }
     
     func testGenerateGasFreeAddress() {
-        let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: TronLinkGasfreeConfig.mainnet_chainId, userAddress: "TLFXfejEMgivFDR2x8qBpukMXd56spmFhz")
+        let gasfreeAddress = GasFreeGenerator.shareManager.generateGasFreeAddress(chainId: GasfreeConfig.mainnet_chainId, userAddress: "TLFXfejEMgivFDR2x8qBpukMXd56spmFhz")
         XCTAssertEqual(gasfreeAddress,"TYKTmMyTeAFrfdRTpYHjnAtFEJtMMotJJe")
     }
     
