@@ -1,4 +1,5 @@
 import Foundation
+import TLCore
 
 class GasfreeTransactionParamModel: NSObject,Codable {
     var token: String?
@@ -13,11 +14,11 @@ class GasfreeTransactionParamModel: NSObject,Codable {
     var sig: String?
 }
 
-struct GasfreeConfig {
+public struct GasfreeConfig {
     
-    static let nile_chainId = "0xcd8690dc"
-    static let shasta_chainId = "0x94a9059e"
-    static let mainnet_chainId = "0x2b6653dc"
+    public static let nile_chainId = "0xcd8690dc"
+    public static let shasta_chainId = "0x94a9059e"
+    public static let mainnet_chainId = "0x2b6653dc"
      
     static let nile_verifyingContract = "THQGuFzL87ZqhxkgqYEryRAd7gqFqL5rdc"
     static let shasta_verifyingContract = "TQghdCeVDA6CnuNVTUhfaAyPfTetqZWNpm"
@@ -81,6 +82,27 @@ struct GasfreeConfig {
 }
 
 class GasFreeCommon: NSObject {
+
+    static let domainName = "GasFreeController"
+    static let domainVersion = "V1.0.0"
+    static let primaryType = "PermitTransfer"
+    static let domainTypes = [
+        EIP712Type(name: "name", type: "string"),
+        EIP712Type(name: "version", type: "string"),
+        EIP712Type(name: "chainId", type: "uint256"),
+        EIP712Type(name: "verifyingContract", type: "address")
+    ]
+    static let permitTransferTypes = [
+        EIP712Type(name: "token", type: "address"),
+        EIP712Type(name: "serviceProvider", type: "address"),
+        EIP712Type(name: "user", type: "address"),
+        EIP712Type(name: "receiver", type: "address"),
+        EIP712Type(name: "value", type: "uint256"),
+        EIP712Type(name: "maxFee", type: "uint256"),
+        EIP712Type(name: "deadline", type: "uint256"),
+        EIP712Type(name: "version", type: "uint256"),
+        EIP712Type(name: "nonce", type: "uint256")
+    ]
     
     class func createSigner712Struct(chainId: String,
                                        verifyingContract: String,
@@ -92,13 +114,13 @@ class GasFreeCommon: NSObject {
                                        maxFee: String,
                                        deadline: Int64,
                                        version: Int64,
-                                       nonce: Int64) -> NSMutableDictionary? {
+                                       nonce: Int64) -> [String: Any] {
 
         let domain: [String: Any] = [
             "chainId": chainId,
-            "name": "GasFreeController",
+            "name": domainName,
             "verifyingContract": verifyingContract,
-            "version": "V1.0.0"
+            "version": domainVersion
         ]
         
         let message: [String: Any] = [
@@ -113,82 +135,70 @@ class GasFreeCommon: NSObject {
             "version": version
         ]
         
-        let mutableDictionary: NSMutableDictionary = [
+        return [
             "domain": domain,
             "message": message,
-            "primaryType": "PermitTransfer",
+            "primaryType": primaryType,
             "types": [
-                "PermitTransfer": [
-                    ["name": "token", "type": "address"],
-                    ["name": "serviceProvider", "type": "address"],
-                    ["name": "user", "type": "address"],
-                    ["name": "receiver", "type": "address"],
-                    ["name": "value", "type": "uint256"],
-                    ["name": "maxFee", "type": "uint256"],
-                    ["name": "deadline", "type": "uint256"],
-                    ["name": "version", "type": "uint256"],
-                    ["name": "nonce", "type": "uint256"]
-                ],
-                "EIP712Domain": [
-                    ["name": "name", "type": "string"],
-                    ["name": "version", "type": "string"],
-                    ["name": "chainId", "type": "uint256"],
-                    ["name": "verifyingContract", "type": "address"]
-                ]
+                primaryType: permitTransferTypes.map { ["name": $0.name, "type": $0.type] },
+                "EIP712Domain": domainTypes.map { ["name": $0.name, "type": $0.type] }
             ]
         ]
-        
-        return mutableDictionary
     }
-    
-    class func getCurrentEnv(chainId:String) -> GasfreeConfig.GasfreeEnv {
-        if chainId == GasfreeConfig.nile_chainId {
+
+    // The fixed PermitTransfer schema comes from the maintained external request
+    // validator. Wallet, provider, fee, nonce and expiry policies belong to callers.
+    class func hasStandardSchema(_ typed: EIP712TypedData) -> Bool {
+        return typed.primaryType == primaryType
+            && Set(typed.types.keys) == Set(["EIP712Domain", primaryType])
+            && typed.types["EIP712Domain"] == domainTypes
+            && typed.types[primaryType] == permitTransferTypes
+            && typed.domain["name"]?.stringValue == domainName
+            && typed.domain["version"]?.stringValue == domainVersion
+    }
+
+    class func getCurrentEnv(chainId: String) -> GasfreeConfig.GasfreeEnv? {
+        guard let normalized = EIP712TypedData.normalizedChainId(chainId) else {
+            return nil
+        }
+        if normalized == EIP712TypedData.normalizedChainId(GasfreeConfig.nile_chainId) {
             return .nile
-        }else if chainId == GasfreeConfig.shasta_chainId {
+        } else if normalized == EIP712TypedData.normalizedChainId(GasfreeConfig.shasta_chainId) {
             return .shasta
-        }else {
+        } else if normalized == EIP712TypedData.normalizedChainId(GasfreeConfig.mainnet_chainId) {
             return .mainnet
         }
+        return nil
     }
-    
-    class func getByte32(base58Data: Data?) -> Data {
-        var bytes32 = Data()
-        if let data = base58Data, data.bytesT.count > 1 {
-            var bytes = data.bytesT[1..<data.bytesT.count]
-            while bytes.count < 32 {
-                bytes.insert(0, at: 1)
-            }
-            
-            bytes32 = Data.init(bytes: bytes)
+
+    class func isValidTypedAddress(_ value: String) -> Bool {
+        guard value.utf8.prefix(45).count <= 44 else { return false }
+        return TLCore.Address(string: value.convertEIP712TronAddress()) != nil
+    }
+
+    class func tronAddressData(_ address: String) -> Data? {
+        // Bound untrusted input before invoking the Base58 decoder.
+        guard address.utf8.prefix(35).count == 34,
+              let data = address.base58CheckData,
+              data.count == 21,
+              data.first == GasfreeConfig.preHexUInt else {
+            return nil
         }
-        return bytes32
+        return data
     }
-    
-    class func base58CheckDecodeRemove41(address: String) -> Data {
-        guard let data = address.base58CheckData, data.count > 1 else {
+
+    class func getByte32(base58Data: Data?) -> Data {
+        guard let data = base58Data, data.count == 21,
+              data.first == GasfreeConfig.preHexUInt else {
             return Data()
         }
-        let bytes = data[1..<data.count]
-        return bytes
+        return Data(repeating: 0, count: 12) + Data(data.dropFirst())
     }
-    
 
     class func getAddressByte(byte32: Data) -> Data {
-        var resultData = Data()
-        if byte32.count > 12 {
-            resultData.append(GasfreeConfig.preHexUInt)
-            let addressByte = byte32[12..<byte32.count]
-            resultData.append(addressByte)
+        guard byte32.count == 32 else {
+            return Data()
         }
-        return resultData
+        return Data([GasfreeConfig.preHexUInt]) + Data(byte32.suffix(20))
     }
-    
-    class func getEthereumAdress(tronAddress: String) -> String {
-        let address = tronAddress.convertTronAddressToBase58HexAddress()
-        if address.hasPrefix("41") {
-            return String(address.dropFirst(2)).add0x
-        }
-        return address
-    }
-    
 }

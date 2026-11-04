@@ -1,7 +1,14 @@
+// Copyright © 2017-2018 Trust.
+//
+// This file is part of Trust. The full Trust copyright notice, including
+// terms governing use, modification, and redistribution, is contained in the
+// file LICENSE at the root of the source code distribution tree.
+
+/// https://github.com/zoul/generic-json-swift
 import Foundation
 
 /// A struct represents EIP712 type tuple
-struct EIP712Type: Codable {
+struct EIP712Type: Codable, Equatable {
     let name: String
     let type: String
 }
@@ -101,7 +108,12 @@ extension EIP712TypedData.JSON: CustomDebugStringConvertible {
         default:
             let encoder = JSONEncoder()
             encoder.outputFormatting = [.prettyPrinted]
-            return try! String(data: encoder.encode(self), encoding: .utf8)!
+            do {
+                let data = try encoder.encode(self)
+                return String(data: data, encoding: .utf8) ?? ""
+            } catch {
+                return ""
+            }
         }
     }
 }
