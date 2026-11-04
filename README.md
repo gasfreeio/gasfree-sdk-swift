@@ -45,6 +45,11 @@ hash generation throws `GasFreeGeneratorError`.
   arguments for deadline, version and nonce; the JSON overload also accepts those
   values as decimal or hexadecimal strings. Fractional or unsafe floating-point
   values are rejected.
+- In both hash overloads, unsigned integer strings must contain ASCII decimal
+  digits, or a `0x`/`0X` prefix followed by hexadecimal digits. Empty strings,
+  a prefix without digits, signs and whitespace are rejected. Zero (`"0"`,
+  `"0x0"`, `"0X0"`) and leading zeros remain valid numeric representations;
+  transaction-specific restrictions still belong to the caller.
 
 Hash generation is deterministic and does not access the network or a wallet.
 The caller must validate the selected chain and contract, token, service provider,

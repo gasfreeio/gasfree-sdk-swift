@@ -337,11 +337,16 @@ private extension BigInt {
 
 private extension BigUInt {
     init?(value: String) {
-        if value.lowercased().starts(with: "0x") {
-            self.init(String(value.dropFirst(2)), radix: 16)
-        } else {
-            self.init(value)
+        let isHex = value.hasPrefix("0x") || value.hasPrefix("0X")
+        let digits = isHex ? String(value.dropFirst(2)) : value
+        let allowedDigits = CharacterSet(charactersIn: isHex ? "0123456789abcdefABCDEF" : "0123456789")
+        // Match the main app's unsigned-string grammar before BigUInt can
+        // interpret an empty string as zero or accept a sign in a digit group.
+        guard !digits.isEmpty,
+              digits.unicodeScalars.allSatisfy({ allowedDigits.contains($0) }) else {
+            return nil
         }
+        self.init(digits, radix: isHex ? 16 : 10)
     }
 }
 

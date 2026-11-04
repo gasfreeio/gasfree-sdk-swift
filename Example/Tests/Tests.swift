@@ -278,6 +278,71 @@ class Tests: XCTestCase {
         }
     }
 
+    func testParameterHashRejectsMalformedUnsignedStrings() {
+        for value in malformedUnsignedStrings {
+            XCTAssertThrowsError(try parameterHash(value: value), "Invalid value: \(value.debugDescription)")
+            XCTAssertThrowsError(try parameterHash(maxFee: value), "Invalid maxFee: \(value.debugDescription)")
+            XCTAssertThrowsError(try parameterHash(chainId: value), "Invalid chainId: \(value.debugDescription)")
+        }
+    }
+
+    func testJSONHashRejectsMalformedUnsignedStrings() throws {
+        let original = try samplePayload()
+        let fields = [
+            ("domain", "chainId"),
+            ("message", "value"), ("message", "maxFee"),
+            ("message", "deadline"), ("message", "version"), ("message", "nonce")
+        ]
+        for (section, field) in fields {
+            for value in malformedUnsignedStrings {
+                var payload = original
+                var values = try XCTUnwrap(payload[section] as? [String: Any])
+                values[field] = value
+                payload[section] = values
+                XCTAssertThrowsError(try hash(payload), "Invalid \(section).\(field): \(value.debugDescription)")
+            }
+        }
+    }
+
+    func testHashOverloadsPreserveZeroValues() throws {
+        var payload = try samplePayload()
+        var domain = try XCTUnwrap(payload["domain"] as? [String: Any])
+        var message = try XCTUnwrap(payload["message"] as? [String: Any])
+        let fields = ["value", "maxFee", "deadline", "version", "nonce"]
+        domain["chainId"] = 0
+        for field in fields {
+            message[field] = 0
+        }
+        payload["domain"] = domain
+        payload["message"] = message
+        let numericZeroHash = try hash(payload)
+
+        for zero in ["0", "00", "0x0", "0X0", "0x00", "0X00"] {
+            domain["chainId"] = zero
+            for field in fields {
+                message[field] = zero
+            }
+            payload["domain"] = domain
+            payload["message"] = message
+            XCTAssertEqual(try hash(payload), numericZeroHash)
+            XCTAssertEqual(try parameterHash(chainId: zero, value: zero, maxFee: zero,
+                                             deadline: 0, version: 0, nonce: 0), numericZeroHash)
+        }
+    }
+
+    func testHashOverloadsPreserveNormalAmounts() throws {
+        let expectedHash = "0x4e0e1444d20768c286b9de66064e4e7311b5160871c8c0292ffeac9a16265622"
+        for amount in ["20000000", "020000000", "0x1312d00", "0X1312D00"] {
+            var payload = try samplePayload()
+            var message = try XCTUnwrap(payload["message"] as? [String: Any])
+            message["value"] = amount
+            message["maxFee"] = amount
+            payload["message"] = message
+            XCTAssertEqual(try hash(payload), expectedHash)
+            XCTAssertEqual(try parameterHash(value: amount, maxFee: amount), expectedHash)
+        }
+    }
+
     func testHashKeepsLargeIntegerStringsExact() throws {
         let maxUInt256 = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
         var payload = try samplePayload()
@@ -311,6 +376,29 @@ class Tests: XCTestCase {
                 XCTFail("Expected invalidToken, got \(sdkError)")
             }
         }
+    }
+
+    private var malformedUnsignedStrings: [String] {
+        return [
+            "", "0x", "0X", "+", "+0", "+20000000", "0x+1", "0X+1",
+            "-0", "-1", "0x-1", " ", " 0", "0 ", "\t1", "1\n", "1 0", "0x 1",
+            "1.0", "1e3", "0xgg", "20000000x", "０", "١",
+            "1+000000000000000001"
+        ]
+    }
+
+    private func parameterHash(chainId: String = "728126428",
+                               value: String = "20000000",
+                               maxFee: String = "20000000",
+                               deadline: Int64 = 1740641152,
+                               version: Int64 = 1,
+                               nonce: Int64 = 1) throws -> String {
+        return try GasFreeGenerator.shareManager.permitTransferMessageHash(
+            chainId: chainId, verifyingContract: "TFFAMQLZybALaLb4uxHA9RBE7pxhUAjF3U",
+            token: "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t", serviceProvider: "TLntW9Z59LYY5KEi9cmwk3PKjQga828ird",
+            user: "TFDP1vFeSYPT6FUznL7zUjhg5X7p2AA8vw", receiver: "TSPrmJetAMo6S6RxMd4tswzeRCFVegBNig",
+            value: value, maxFee: maxFee, deadline: deadline, version: version, nonce: nonce
+        )
     }
 
     private func samplePayload() throws -> [String: Any] {
