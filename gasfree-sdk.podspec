@@ -19,5 +19,5 @@ Pod::Spec.new do |s|
   s.swift_versions = '4.2'
 
   s.source_files = 'gasfree-sdk-swift/Classes/**/*'
-  s.dependency 'tronlink-iOS-core','1.0.2'
+  s.dependency 'tronlink-iOS-core','2.0.0'
 end
