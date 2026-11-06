@@ -87,6 +87,7 @@ public class GasFreeGenerator: NSObject {
     private func permitTransferMessageHash(data: Data) throws -> String {
         let typed: EIP712TypedData
         do {
+            try GasFreeJSONBoundary.validate(data)
             typed = try JSONDecoder().decode(EIP712TypedData.self, from: data)
         } catch {
             throw GasFreeGeneratorError.jsonDecodeError(error)

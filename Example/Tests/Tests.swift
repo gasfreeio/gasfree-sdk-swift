@@ -278,6 +278,105 @@ class Tests: XCTestCase {
         }
     }
 
+    func testRawJSONRejectsDuplicateKeysAtEverySchemaLevel() throws {
+        let payload = try samplePayload()
+        let types = try XCTUnwrap(payload["types"] as? [String: Any])
+        let fields = try XCTUnwrap(types["PermitTransfer"] as? [[String: String]])
+        let fieldsData = try JSONSerialization.data(withJSONObject: fields, options: [])
+        let fieldsJSON = try XCTUnwrap(String(data: fieldsData, encoding: .utf8))
+        // Inject duplicates into the raw text, after any fixture serialization.
+        let replacements = [
+            ("\"primaryType\": \"PermitTransfer\"", "\"primaryType\": \"PermitTransfer\", \"primaryType\": \"PermitTransfer\""),
+            ("\"domain\": {", "\"domain\": { \"chainId\": \"728126428\","),
+            ("\"message\": {", "\"message\": { \"value\": \"20000000\","),
+            ("\"types\": {", "\"types\": { \"PermitTransfer\": \(fieldsJSON),"),
+            ("\"name\": \"token\"", "\"name\": \"token\", \"name\": \"token\""),
+            ("\"message\": {", "\"message\": { \"\\u0076alue\": \"20000000\",")
+        ]
+        for (original, replacement) in replacements {
+            let json = gasfreeJSON.replacingOccurrences(of: original, with: replacement)
+            XCTAssertThrowsError(try GasFreeGenerator.shareManager.permitTransferMessageHash(gasfreeJSONString: json))
+        }
+    }
+
+    func testRawJSONRejectsFractionalAndExponentTokens() {
+        let fields = [
+            ("\"chainId\": \"728126428\"", "\"chainId\""),
+            ("\"value\": \"20000000\"", "\"value\""),
+            ("\"maxFee\": \"20000000\"", "\"maxFee\""),
+            ("\"deadline\": 1740641152", "\"deadline\""),
+            ("\"version\":1", "\"version\""),
+            ("\"nonce\": 1", "\"nonce\"")
+        ]
+        for (original, key) in fields {
+            for token in ["1.0000000000000001", "9007199254740990.5", "-0.1e-400", "1.0", "1e3", "0e0"] {
+                let json = gasfreeJSON.replacingOccurrences(of: original, with: "\(key): \(token)")
+                XCTAssertThrowsError(try GasFreeGenerator.shareManager.permitTransferMessageHash(gasfreeJSONString: json), "\(key): \(token)")
+            }
+        }
+    }
+
+    func testRawJSONPreservesIntegerLiteralsAndEscapedKeys() throws {
+        for integer in ["0", "20000000", "9007199254740991", "9223372036854775807"] {
+            let json = gasfreeJSON.replacingOccurrences(of: "\"value\": \"20000000\"", with: "\"value\": \(integer)")
+            XCTAssertEqual(try GasFreeGenerator.shareManager.permitTransferMessageHash(gasfreeJSONString: json),
+                           try parameterHash(value: integer))
+        }
+        let escaped = gasfreeJSON.replacingOccurrences(of: "\"value\":", with: "\"\\u0076alue\":")
+        XCTAssertEqual(try GasFreeGenerator.shareManager.permitTransferMessageHash(gasfreeJSONString: escaped),
+                       try parameterHash())
+    }
+
+    func testUInt256StringLengthLimitsAndRange() throws {
+        let maximum = "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+        let accepted = [
+            (String(repeating: "0", count: 77) + "1", "1"),
+            ("0X" + String(repeating: "0", count: 63) + "1", "1"),
+            (maximum, "0x" + String(repeating: "f", count: 64))
+        ]
+        for (value, equivalent) in accepted {
+            XCTAssertEqual(try parameterHash(value: value), try parameterHash(value: equivalent))
+            XCTAssertEqual(try parameterHash(maxFee: value), try parameterHash(maxFee: equivalent))
+            XCTAssertEqual(try parameterHash(chainId: value), try parameterHash(chainId: equivalent))
+        }
+        let rejected = [
+            String(repeating: "0", count: 78) + "1", // 79 decimal digits, despite value == 1.
+            "0x" + String(repeating: "0", count: 64) + "1", // 65 hex digits.
+            String(repeating: "0", count: 100_000) + "1",
+            "115792089237316195423570985008687907853269984665640564039457584007913129639936" // 78 digits, but overflows.
+        ]
+        let original = try samplePayload()
+        for value in rejected {
+            XCTAssertThrowsError(try parameterHash(chainId: value))
+            XCTAssertThrowsError(try parameterHash(value: value))
+            XCTAssertThrowsError(try parameterHash(maxFee: value))
+            for (section, field) in [("domain", "chainId"), ("message", "value"), ("message", "maxFee"),
+                                     ("message", "deadline"), ("message", "version"), ("message", "nonce")] {
+                var payload = original
+                var values = try XCTUnwrap(payload[section] as? [String: Any])
+                values[field] = value
+                payload[section] = values
+                XCTAssertThrowsError(try hash(payload), "\(section).\(field)")
+            }
+        }
+    }
+
+    func testAddressGenerationBoundsChainIDBeforeParsing() {
+        let generator = GasFreeGenerator.shareManager
+        let user = "TLFXfejEMgivFDR2x8qBpukMXd56spmFhz"
+        let expected = generator.generateGasFreeAddress(chainId: GasfreeConfig.mainnet_chainId, userAddress: user)
+        let decimal = String(repeating: "0", count: 69) + "728126428"
+        let hex = "0x" + String(repeating: "0", count: 56) + "2b6653dc"
+        XCTAssertEqual(generator.generateGasFreeAddress(chainId: decimal, userAddress: user), expected)
+        XCTAssertEqual(generator.generateGasFreeAddress(chainId: hex, userAddress: user), expected)
+        for chain in ["0" + decimal, "0x0" + String(hex.dropFirst(2)),
+                      String(repeating: "0", count: 100_000) + "728126428",
+                      String(repeating: "9", count: 100_000),
+                      String(repeating: " ", count: 100_000) + "728126428"] {
+            XCTAssertEqual(generator.generateGasFreeAddress(chainId: chain, userAddress: user), "")
+        }
+    }
+
     func testParameterHashRejectsMalformedUnsignedStrings() {
         for value in malformedUnsignedStrings {
             XCTAssertThrowsError(try parameterHash(value: value), "Invalid value: \(value.debugDescription)")

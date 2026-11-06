@@ -45,14 +45,18 @@ extension EIP712TypedData {
         return (Crypto.hash(data), domainData, messageData)
     }
 
-    static func normalizedChainId(_ chainId: String) -> BigUInt? {
+    static func normalizedChainId(_ chainId: String) -> UInt32? {
+        // Address generation only selects one of three fixed UInt32 network IDs.
+        // Bound the original input before trimming or parsing, including zeros.
+        guard chainId.utf8.prefix(79).count <= 78 else { return nil }
         let value = chainId.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !value.isEmpty else { return nil }
-        if value.lowercased().hasPrefix("0x") {
+        if value.hasPrefix("0x") || value.hasPrefix("0X") {
+            guard value.utf8.count <= 66 else { return nil }
             let hex = String(value.dropFirst(2))
-            return hex.isEmpty ? nil : BigUInt(hex, radix: 16)
+            return hex.isEmpty ? nil : UInt32(hex, radix: 16)
         }
-        return BigUInt(value, radix: 10)
+        return UInt32(value, radix: 10)
     }
 
     /// Recursively finds all the dependencies of a type
@@ -338,6 +342,8 @@ private extension BigInt {
 private extension BigUInt {
     init?(value: String) {
         let isHex = value.hasPrefix("0x") || value.hasPrefix("0X")
+        let maximumLength = isHex ? 66 : 78 // Includes the hex prefix and any leading zeros.
+        guard value.utf8.prefix(maximumLength + 1).count <= maximumLength else { return nil }
         let digits = isHex ? String(value.dropFirst(2)) : value
         let allowedDigits = CharacterSet(charactersIn: isHex ? "0123456789abcdefABCDEF" : "0123456789")
         // Match the main app's unsigned-string grammar before BigUInt can

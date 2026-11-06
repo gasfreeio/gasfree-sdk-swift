@@ -238,3 +238,118 @@ extension EIP712TypedData {
         case null
     }
 }
+
+/// Checks information that JSONDecoder would otherwise discard. The fixed
+/// GasFree schema has only unsigned integer numeric fields; strings are still
+/// decoded and validated by the existing typed-data and ABI code.
+struct GasFreeJSONBoundary {
+    private let bytes: [UInt8]
+    private var index = 0
+
+    static func validate(_ data: Data) throws {
+        var scanner = GasFreeJSONBoundary(bytes: Array(data), index: 0)
+        // Preserve Foundation's support for a UTF-8 byte order mark.
+        if scanner.bytes.starts(with: [0xef, 0xbb, 0xbf]) {
+            scanner.index = 3
+        }
+        try scanner.scanValue(depth: 0)
+        scanner.skipWhitespace()
+        guard scanner.index == scanner.bytes.count else {
+            throw scanner.error("Unexpected trailing JSON content")
+        }
+    }
+
+    private mutating func scanValue(depth: Int) throws {
+        skipWhitespace()
+        guard index < bytes.count else { throw error("Missing JSON value") }
+        switch bytes[index] {
+        case 0x7b, 0x5b: // object or array
+            // Bound recursion in this preflight scanner, before Foundation runs.
+            guard depth < 64 else { throw error("JSON nesting exceeds 64 levels") }
+            let isObject = bytes[index] == 0x7b
+            let closing: UInt8 = isObject ? 0x7d : 0x5d
+            index += 1
+            skipWhitespace()
+            if consume(closing) { return }
+            var keys = Set<String>()
+            while true {
+                if isObject {
+                    let range = try scanString()
+                    // Compare decoded keys so Unicode-escaped aliases also collide.
+                    let key = try JSONDecoder().decode(String.self, from: Data(bytes[range]))
+                    guard keys.insert(key).inserted else {
+                        throw error("Duplicate JSON object key")
+                    }
+                    skipWhitespace()
+                    try expect(0x3a) // colon
+                }
+                try scanValue(depth: depth + 1)
+                skipWhitespace()
+                if consume(closing) { return }
+                try expect(0x2c) // comma
+                skipWhitespace()
+            }
+        case 0x22:
+            _ = try scanString()
+        case 0x30...0x39:
+            let start = index
+            while index < bytes.count, (0x30...0x39).contains(bytes[index]) {
+                index += 1
+                guard index - start <= 78 else { throw error("JSON integer exceeds 78 digits") }
+            }
+            guard index - start == 1 || bytes[start] != 0x30 else {
+                throw error("Leading zeros in JSON number")
+            }
+            if index < bytes.count, [0x2e, 0x65, 0x45].contains(bytes[index]) {
+                throw error("JSON numbers must be unsigned integer literals, without fractions or exponents")
+            }
+        case 0x74:
+            try expectLiteral("true")
+        case 0x66:
+            try expectLiteral("false")
+        case 0x6e:
+            try expectLiteral("null")
+        default:
+            throw error("Invalid JSON value; numbers must be unsigned integer literals")
+        }
+    }
+
+    private mutating func scanString() throws -> Range<Int> {
+        let start = index
+        try expect(0x22)
+        while index < bytes.count {
+            let byte = bytes[index]
+            index += 1
+            if byte == 0x22 { return start..<index }
+            if byte == 0x5c {
+                guard index < bytes.count else { throw error("Unterminated JSON escape") }
+                index += 1 // Escaped quotes cannot close the string.
+            }
+        }
+        throw error("Unterminated JSON string")
+    }
+
+    private mutating func skipWhitespace() {
+        while index < bytes.count, [0x20, 0x09, 0x0a, 0x0d].contains(bytes[index]) {
+            index += 1
+        }
+    }
+
+    private mutating func consume(_ byte: UInt8) -> Bool {
+        guard index < bytes.count, bytes[index] == byte else { return false }
+        index += 1
+        return true
+    }
+
+    private mutating func expect(_ byte: UInt8) throws {
+        guard consume(byte) else { throw error("Invalid JSON syntax") }
+    }
+
+    private mutating func expectLiteral(_ literal: String) throws {
+        for byte in literal.utf8 { try expect(byte) }
+    }
+
+    private func error(_ message: String) -> DecodingError {
+        return .dataCorrupted(.init(codingPath: [], debugDescription: "\(message) at byte \(index)."))
+    }
+}

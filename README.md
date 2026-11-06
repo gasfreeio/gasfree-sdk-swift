@@ -39,17 +39,24 @@ hash generation throws `GasFreeGeneratorError`.
 - The JSON hash overload requires the standard `PermitTransfer` field names,
   types and order, with `EIP712Domain`, domain name `GasFreeController`, and domain
   version `V1.0.0`. Missing or extra domain/message fields, malformed values and
-  out-of-range numbers are rejected.
+  out-of-range numbers are rejected. Duplicate object keys (including escaped
+  equivalents) are rejected at every nesting level before typed-data decoding.
+  JSON nesting is limited to 64 container levels.
   It is not a general-purpose EIP-712 hashing API.
 - Use strings for large `uint256` values. The parameter overload keeps its `Int64`
   arguments for deadline, version and nonce; the JSON overload also accepts those
-  values as decimal or hexadecimal strings. Fractional or unsafe floating-point
-  values are rejected.
+  values as decimal or hexadecimal strings. Unquoted JSON numbers must be unsigned
+  decimal integer literals: fractions, negative numbers and exponent notation
+  (including `1.0` and `1e3`) are rejected before numeric decoding.
 - In both hash overloads, unsigned integer strings must contain ASCII decimal
   digits, or a `0x`/`0X` prefix followed by hexadecimal digits. Empty strings,
   a prefix without digits, signs and whitespace are rejected. Zero (`"0"`,
-  `"0x0"`, `"0X0"`) and leading zeros remain valid numeric representations;
-  transaction-specific restrictions still belong to the caller.
+  `"0x0"`, `"0X0"`) and leading zeros remain valid numeric representations within
+  the input limit: at most 78 decimal digits or 64 hexadecimal digits, counting
+  leading zeros and excluding the hex prefix. The uint256 range is still checked.
+  Address-generation chain IDs are also length-bounded before network selection
+  (at most 78 input bytes, and at most 64 hex digits after trimming).
+  Transaction-specific restrictions still belong to the caller.
 
 Hash generation is deterministic and does not access the network or a wallet.
 The caller must validate the selected chain and contract, token, service provider,
