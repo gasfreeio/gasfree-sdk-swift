@@ -1199,7 +1199,7 @@ PODS:
   - FMDB/Core (2.7.12)
   - FMDB/standard (2.7.12):
     - FMDB/Core
-  - gasfree-sdk (1.0.0):
+  - gasfree-sdk (1.0.1):
     - tronlink-iOS-core (= 2.0.0)
   - gRPC (1.84.0):
     - gRPC/GRPCCore (= 1.84.0)
@@ -1324,7 +1324,7 @@ SPEC CHECKSUMS:
   BoringSSL-GRPC: 7bbfd8bcc35aacc95894068b7d0ca41a7db3b34c
   CryptoSwift: e2e7776512f250e66205955da748e7a4e4abffe0
   FMDB: 728731dd336af3936ce00f91d9d8495f5718a0e6
-  gasfree-sdk: ca2e126e089a7c42e5ac88ea32de5fc80ac2fe84
+  gasfree-sdk: e1c747e3239ab7683e36a212e93d2834ce968390
   gRPC: 1cf90deaac919193d397f02722ca37e41b5ce9b0
   gRPC-Core: 901e8ef5ab57cbe699947b7d65cc7ca1bdd249fa
   gRPC-ProtoRPC: 5e147e7344cb462aa150e7e1fffb28b3a390b79b

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'gasfree-sdk'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.summary          = 'gasfree-sdk Generator gasFree Address from user address'
 
   s.homepage         = 'https://github.com/gasfreeio/gasfree-sdk-swift'
