@@ -1,8 +1,14 @@
+// Copyright © 2017-2018 Trust.
+//
+// This file is part of Trust. The full Trust copyright notice, including
+// terms governing use, modification, and redistribution, is contained in the
+// file LICENSE at the root of the source code distribution tree.
+
+/// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-712.md
 import Foundation
 import BigInt
-import TronCore
-import CryptoSwift
 import TLCore
+import CryptoSwift
 
 
 let identifierPattern = "^[a-zA-Z_$][a-zA-Z_$0-9]*$"
@@ -16,31 +22,41 @@ enum EIP712Error: Error{
 extension EIP712TypedData {
     /// Sign-able hash for an `EIP712TypedData`
     func signHash() throws -> Data {
-        var domainKey = "EIP712Domain"
-        for typeKey in types.keys {
-            if typeKey.lowercased().contains("domain") {
-                domainKey = typeKey
-                break
-            }
+        guard types["EIP712Domain"] != nil,
+              checkTypeParam(primaryType: "EIP712Domain"),
+              checkTypeParam(primaryType: primaryType) else {
+            throw EIP712Error.TypeParamError("invalid eip712 schema")
         }
-        let domainData = try hashStruct(domain, type: domainKey)
+        let domainData = try hashStruct(domain, type: "EIP712Domain")
         let messageData = try hashStruct(message, type: primaryType)
         let data = Data(bytes: [0x19, 0x01]) + domainData + messageData
         return Crypto.hash(data)
     }
     
     func signEip712Hash() throws -> (hashData: Data,domainData: Data,messageData: Data) {
-        var domainKey = "EIP712Domain"
-        for typeKey in types.keys {
-            if typeKey.lowercased().contains("domain") {
-                domainKey = typeKey
-                break
-            }
+        guard types["EIP712Domain"] != nil,
+              checkTypeParam(primaryType: "EIP712Domain"),
+              checkTypeParam(primaryType: primaryType) else {
+            throw EIP712Error.TypeParamError("invalid eip712 schema")
         }
-        let domainData = try hashStruct(domain, type: domainKey)
+        let domainData = try hashStruct(domain, type: "EIP712Domain")
         let messageData = try hashStruct(message, type: primaryType)
         let data = Data(bytes: [0x19, 0x01]) + domainData + messageData
         return (Crypto.hash(data), domainData, messageData)
+    }
+
+    static func normalizedChainId(_ chainId: String) -> UInt32? {
+        // Address generation only selects one of three fixed UInt32 network IDs.
+        // Bound the original input before trimming or parsing, including zeros.
+        guard chainId.utf8.prefix(79).count <= 78 else { return nil }
+        let value = chainId.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !value.isEmpty else { return nil }
+        if value.hasPrefix("0x") || value.hasPrefix("0X") {
+            guard value.utf8.count <= 66 else { return nil }
+            let hex = String(value.dropFirst(2))
+            return hex.isEmpty ? nil : UInt32(hex, radix: 16)
+        }
+        return UInt32(value, radix: 10)
     }
 
     /// Recursively finds all the dependencies of a type
@@ -68,7 +84,7 @@ extension EIP712TypedData {
         var depSet = findDependencies(primaryType: primaryType)
         depSet.remove(primaryType)
         let sorted = [primaryType] + Array(depSet).sorted()
-        let encoded = sorted.compactMap { type in
+        let encoded: String = sorted.compactMap { type in
             guard let values = types[type] else { return nil }
             let param = values.map { "\($0.type) \($0.name)" }.joined(separator: ",")
             return "\(type)(\(param))"
@@ -128,7 +144,7 @@ extension EIP712TypedData {
         var depSet = findDependencies(primaryType: primaryType)
         depSet.remove(primaryType)
         let sorted = [primaryType] + Array(depSet).sorted()
-        let encoded = sorted.compactMap { type in
+        let encoded: String = sorted.compactMap { type in
             guard let values = types[type] else { return nil }
             let param = values.map { "\($0.type) \($0.name)" }.joined(separator: ",")
             return "\(type)(\(param))"
@@ -142,42 +158,48 @@ extension EIP712TypedData {
     func encodeData(data: JSON, type: String) throws -> Data {
         let encoder = ABIEncoder()
         var values: [ABIValue] = []
-        if let valueTypes = types[type] {
-            for field in valueTypes {
-                guard let value = data[field.name] else { continue }
-                if let encoded = try encodeField(value: value, type: field.type) {
-                    self.testABIEncodeHexString(value: encoded, type: field.type)
-                    values.append(encoded)
-                }
+        guard let valueTypes = types[type],
+              let object = data.objectValue,
+              object.count == valueTypes.count,
+              Set(object.keys) == Set(valueTypes.map { $0.name }) else {
+            throw EIP712Error.TypeParamError("missing eip712 type: \(type)")
+        }
+        for field in valueTypes {
+            guard let value = data[field.name],
+                  let encoded = try encodeField(value: value, type: field.type) else {
+                throw EIP712Error.TypeParamError("invalid eip712 field: \(type).\(field.name)")
             }
+            values.append(encoded)
         }
         try encoder.encode(tuple: values)
         return encoder.data
     }
     
-    func testABIEncodeHexString(value:ABIValue,type:String) {
-        let encoder = ABIEncoder()
-        do {
-            try encoder.encode(tuple: [value])
-        } catch let error {
-            print("Error ABIEncode: \(error)")
-        }
-        let hexstring = encoder.data.hexString
-    }
-
     func encodeField(value: JSON, type: String) throws -> ABIValue? {
         if isStruct(type) {
             let nestEncoded = try hashStruct(value, type: type)
             return try ABIValue(nestEncoded, type: .bytes(32))
-        } else if let indexOfOpenBracket = type.index(of: "["), type.hasSuffix("]"), case let .array(elements) = value {
+        } else if type.hasSuffix("]"), let indexOfLastBracket = type.lastIndex(of: "["), case let .array(elements) = value {
             var encodedElements: Data = .init()
-            let elementType = String(type[..<indexOfOpenBracket])
-            for each in elements {
-                if let value = try encodeField(value: each, type: elementType) {
-                    let encoder = ABIEncoder()
-                    try encoder.encode(value)
-                    encodedElements += encoder.data
+            // Strip only the trailing dimension: the element type of `T[][]` is `T[]`, not `T`.
+            // Using the first "[" collapsed every dimension at once, which made nested arrays
+            // either throw (basic types) or hash against the wrong type (struct types).
+            let elementType = String(type[..<indexOfLastBracket])
+            // A fixed-size array `T[N]` must carry exactly N elements; a dynamic `T[]` has
+            // an empty dimension and accepts any count.
+            let dimension = type[type.index(after: indexOfLastBracket)..<type.index(before: type.endIndex)]
+            if !dimension.isEmpty {
+                guard let declaredCount = Int(dimension), declaredCount == elements.count else {
+                    throw EIP712Error.TypeParamError("eip712 fixed-size array length mismatch! type = \(type), actual count = \(elements.count)")
                 }
+            }
+            for each in elements {
+                guard let value = try encodeField(value: each, type: elementType) else {
+                    throw EIP712Error.TypeParamError("invalid eip712 array element: \(elementType)")
+                }
+                let encoder = ABIEncoder()
+                try encoder.encode(value)
+                encodedElements += encoder.data
             }
             return try ABIValue(Crypto.hash(encodedElements), type: .bytes(32))
         } else if let value = try makeABIValue(data: value, type: type) {
@@ -192,20 +214,25 @@ extension EIP712TypedData {
     /// Array is processed by encodeData first, and then keccak256 hashed
     private func makeABIValue(data: JSON?, type: String) throws -> ABIValue? {
         if type == "string", let value = data?.stringValue, let valueData = value.data(using: .utf8) {
-            return try? ABIValue(Crypto.hash(valueData), type: .bytes(32))
+            return try ABIValue(Crypto.hash(valueData), type: .bytes(32))
         } else if type == "bytes", let value = data?.stringValue {
-            var valueData = value.drop0x.hexStringToData() ?? Data.init()
-            if value == "0x" {
-                valueData = Data.init(hex: value.drop0x)
+            guard let valueData = Data(hexString: value) else {
+                throw EIP712Error.TypeParamError("invalid eip712 bytes hex")
             }
-            return try? ABIValue(Crypto.hash(valueData), type: .bytes(32))
+            return try ABIValue(Crypto.hash(valueData), type: .bytes(32))
         } else if type == "bool", let value = data?.boolValue {
-            return try? ABIValue(value, type: .bool)
+            return try ABIValue(value, type: .bool)
         } else if type == "address", let value = data?.stringValue {
+            // The pinned TLCore converter calls its own Base58 validator. Bound
+            // input here too: 34-byte Base58 or up to 44-byte prefixed TRON hex.
+            // EVM's 40/42-byte forms keep the existing conversion below.
+            guard value.utf8.prefix(45).count <= 44 else {
+                throw EIP712Error.TypeParamError("eip712 type value error! type = address")
+            }
             let addressString = value.convertEIP712TronAddress()
             let address = Address(string: addressString)
             if let checkAddress = address {
-                return try? ABIValue(checkAddress, type: .address)
+                return try ABIValue(checkAddress, type: .address)
             }
         } else if type.starts(with: "uint") || type.lowercased() == "trctoken" {
             var size = parseIntSize(type: type, prefix: "uint")
@@ -213,49 +240,46 @@ extension EIP712TypedData {
                 size = 256
             }
             guard size > 0 && size <= 256 else {
-                return nil
+                throw EIP712Error.TypeParamError("eip712 integer width error! type = \(type)")
             }
-            if let numberValue = data?.numberValue {
-                switch numberValue {
-                case let .int(value):
-                    return try? ABIValue(value, type: .uint(bits: size))
-                case let .double(value):
-                    return try? ABIValue(Int(value), type: .uint(bits: size))
-                }
-            } else if let value = data?.stringValue,
-                      let bigInt = BigUInt(value: value) {
-                return try? ABIValue(bigInt, type: .uint(bits: size))
+            if let value = integerString(from: data),
+               let bigInt = BigUInt(value: value) {
+                return try ABIValue(bigInt, type: .uint(bits: size))
             }
         } else if type.starts(with: "int") {
             let size = parseIntSize(type: type, prefix: "int")
             guard size > 0 && size <= 256 else {
-                return nil
+                throw EIP712Error.TypeParamError("eip712 integer width error! type = \(type)")
             }
-            if let numberValue = data?.numberValue {
-                switch numberValue {
-                case let .int(value):
-                    return try? ABIValue(value, type: .int(bits: size))
-                case let .double(value):
-                    return try? ABIValue(Int(value), type: .int(bits: size))
-                }
-            } else if let value = data?.stringValue,
-                      let bigInt = BigInt(value: value) {
-                return try? ABIValue(bigInt, type: .int(bits: size))
+            if let value = integerString(from: data),
+               let bigInt = BigInt(value: value) {
+                return try ABIValue(bigInt, type: .int(bits: size))
             }
         } else if type.starts(with: "bytes") {
             if let length = Int(type.dropFirst("bytes".count)), let value = data?.stringValue {
                 if value.starts(with: "0x") {
-                    var hex = value.drop0x.hexStringToData() ?? Data.init()
-                    if value == "0x" {
-                        hex = Data.init(hex: value.drop0x)
+                    guard let hex = Data(hexString: value) else {
+                        throw EIP712Error.TypeParamError("invalid eip712 fixed bytes hex")
                     }
-                    return try? ABIValue(hex, type: .bytes(length))
+                    return try ABIValue(hex, type: .bytes(length))
                 } else {
-                    return try? ABIValue(Data(bytes: Array(value.utf8)), type: .bytes(length))
+                    return try ABIValue(Data(bytes: Array(value.utf8)), type: .bytes(length))
                 }
             }
         }
         throw EIP712Error.TypeParamError("eip712 type value error! type = \(type)")
+    }
+
+    private func integerString(from data: JSON?) -> String? {
+        guard let data = data else { return nil }
+        switch data {
+        case .string(let value):
+            return value
+        case .number(let value):
+            return value.integerString
+        case .array, .object, .bool, .null:
+            return nil
+        }
     }
 
     /// Helper func for encoding uint / int types
@@ -286,9 +310,28 @@ extension EIP712TypedData {
     }
 }
 
+private extension EIP712TypedData.NumberValue {
+    var integerString: String? {
+        switch self {
+        case .int(let value):
+            return String(value)
+        case .double(let value):
+            guard value.isFinite,
+                  value.rounded(.towardZero) == value,
+                  abs(value) <= 9_007_199_254_740_991 else {
+                return nil
+            }
+            if value == 0 {
+                return "0"
+            }
+            return String(format: "%.0f", value)
+        }
+    }
+}
+
 private extension BigInt {
     init?(value: String) {
-        if value.starts(with: "0x") {
+        if value.lowercased().starts(with: "0x") {
             self.init(String(value.dropFirst(2)), radix: 16)
         } else {
             self.init(value)
@@ -298,91 +341,23 @@ private extension BigInt {
 
 private extension BigUInt {
     init?(value: String) {
-        if value.starts(with: "0x") {
-            self.init(String(value.dropFirst(2)), radix: 16)
-        } else {
-            self.init(value)
+        let isHex = value.hasPrefix("0x") || value.hasPrefix("0X")
+        let maximumLength = isHex ? 66 : 78 // Includes the hex prefix and any leading zeros.
+        guard value.utf8.prefix(maximumLength + 1).count <= maximumLength else { return nil }
+        let digits = isHex ? String(value.dropFirst(2)) : value
+        let allowedDigits = CharacterSet(charactersIn: isHex ? "0123456789abcdefABCDEF" : "0123456789")
+        // Match the main app's unsigned-string grammar before BigUInt can
+        // interpret an empty string as zero or accept a sign in a digit group.
+        guard !digits.isEmpty,
+              digits.unicodeScalars.allSatisfy({ allowedDigits.contains($0) }) else {
+            return nil
         }
+        self.init(digits, radix: isHex ? 16 : 10)
     }
 }
 
 class Crypto {
     static func hash(_ data: Data) -> Data {
         return data.sha3(.keccak256)
-    }
-}
-
-extension String {
-    var base58CheckData: Data? {
-        return Data(base58CheckDecoding: self)
-    }
-    
-    func isEIP712TronAddress() -> Bool {
-        if self.hasPrefix("T") || self.hasPrefix("41") {
-            return true
-        }
-        return false
-    }
-    
-    func convertEIP712TronAddress() -> String {
-        var currentAddress = self
-        if isEIP712TronAddress() {
-            if currentAddress.hasPrefix("T") {
-                currentAddress = currentAddress.base58CheckData?.toHexString() ?? ""
-            }
-            currentAddress = String(currentAddress.dropFirst("41".count))
-        }else if currentAddress.hasPrefix("0x") {
-            currentAddress = String(currentAddress.dropFirst("0x".count))
-        }
-        return currentAddress
-    }
-    
-    
-    func hexStringToData() -> Data? {
-        guard !self.isEmpty else {
-            return nil
-        }
-        
-        var hexData = Data(capacity: 20)
-        var range: NSRange
-        
-        if self.count % 2 == 0 {
-            range = NSRange(location: 0, length: 2)
-        } else {
-            range = NSRange(location: 0, length: 1)
-        }
-        
-        var location = range.location
-        while location < self.count {
-            let hexCharStr = (self as NSString).substring(with: range)
-            var value: UInt32 = 0
-            Scanner(string: hexCharStr).scanHexInt32(&value)
-            var byte = UInt8(value)
-            hexData.append(&byte, count: 1)
-            
-            location += range.length
-            range.location = location
-            range.length = 2
-        }
-        
-        return hexData
-    }
-}
-
-extension Data {
-    init?(base58CheckDecoding string: String, alphabet: [UInt8] = Base58String.btcAlphabet) {
-        
-        let data = Data(base58Decoding: string)
-        guard let decodeCheck = data, decodeCheck.count >= 4 else {
-            return nil
-        }
-        let decodeData = decodeCheck.subdata(in: 0..<(decodeCheck.count - 4))
-        let hash0 = decodeData.sha256T()
-        let hash1 = hash0.sha256T()
-        if hash1[0] == decodeCheck[decodeData.count] && hash1[1] == decodeCheck[decodeData.count + 1] && hash1[2] == decodeCheck[decodeData.count + 2] && hash1[3] == decodeCheck[decodeData.count + 3] {
-            self = decodeData
-        } else {
-            return nil
-        }
     }
 }
